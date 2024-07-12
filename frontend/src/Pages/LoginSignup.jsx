@@ -1,13 +1,15 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./CSS/LoginSignUp.css";
 
-const LoginSignUp = () => {
+const LoginSignUp = ({ setIsAuthenticated }) => {
   const [state, setState] = useState("Login");
   const [formData, setFormData] = useState({
     username: "",
     password: "",
     email: "",
   });
+  const navigate = useNavigate();
 
   const changeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,11 +32,13 @@ const LoginSignUp = () => {
       });
     if (responseData.success) {
       localStorage.setItem("auth-token", responseData.token);
-      window.location.replace("/");
+      setIsAuthenticated(true);
+      navigate("/");
     } else {
       alert(responseData.error);
     }
   };
+
   const signUp = async () => {
     console.log("Sign up", formData);
     let responseData;
@@ -52,7 +56,8 @@ const LoginSignUp = () => {
       });
     if (responseData.success) {
       localStorage.setItem("auth-token", responseData.token);
-      window.location.replace("/");
+      setIsAuthenticated(true);
+      navigate("/login");
     } else {
       alert(responseData.error);
     }
@@ -90,9 +95,7 @@ const LoginSignUp = () => {
         <div className="loginsignup-fields-button">
           <button
             onClick={() => {
-              {
-                state === "Login" ? login() : signUp();
-              }
+              state === "Login" ? login() : signUp();
             }}
           >
             Continue
